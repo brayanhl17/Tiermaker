@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tier Maker</title>
+  <style>
+    :root {
+      --color-s: linear-gradient(135deg, #ff6b6b, #ff8787);
+      --color-a: linear-gradient(135deg, #ffa726, #ffb74d);
+      --color-b: linear-gradient(135deg, #ffeb3b, #fff176);
+      --color-c: linear-gradient(135deg, #66bb6a, #81c784);
+      --color-d: linear-gradient(135deg, #42a5f5, #64b5f6);
+      --color-e: linear-gradient(135deg, #9575cd, #b39ddb);
+      
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-card: #242424;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --border-color: #333333;
+      --accent: #6366f1;
+      --accent-hover: #5855eb;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    button {
+      background: transparent;
+      border: 0;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a2e 100%);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+      margin: 0 auto;
+      max-width: 600px;
+      padding: 0 24px;
+      user-select: none;
+      min-height: 100vh;
+    }
+
+    #top-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 0 32px;
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent), #ec4899, #f59e0b);
+        border-radius: 2px;
+      }
+
+      & h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0;
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+      }
+    }
+
+    .tier {
+      background: var(--bg-card);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 70px;
+      align-items: center;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.drag-over {
+        background: rgba(99, 102, 241, 0.1);
+        transform: scale(1.02);
+        box-shadow: inset 0 0 0 2px var(--accent);
+      }
+    }
+
+    .label {
+      cursor: pointer;
+      background: var(--level);
+      color: #1a1a1a;
+      font-weight: 700;
+      width: 80px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.2);
+      }
+
+      & span:focus {
+        outline: 2px solid rgba(255, 255, 255, 0.8);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+    }
+
+    #selector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin-top: 32px;
+      padding-bottom: 32px;
+    }
+
+    #selector-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+
+      & button,
+      & label {
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--bg-card);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, var(--accent), #ec4899);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.3);
+          border-color: var(--accent);
+
+          &::before {
+            opacity: 0.1;
+          }
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+
+      & svg {
+        width: 20px;
+        height: 20px;
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    #selector-items {
+      border: 2px dashed var(--border-color);
+      border-radius: 16px;
+      width: 100%;
+      min-height: 120px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 16px;
+      transition: all 0.3s ease;
+      position: relative;
+      background: rgba(255, 255, 255, 0.02);
+
+      &::before {
+        content: 'Arrastra imágenes aquí o haz clic en + para añadir';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+      }
+
+      &:not(:empty)::before {
+        opacity: 0;
+      }
+
+      &.drag-files {
+        background: rgba(99, 102, 241, 0.1);
+        border-color: var(--accent);
+        border-style: solid;
+        transform: scale(1.02);
+      }
+
+      &:hover:empty {
+        border-color: var(--accent);
+        background: rgba(99, 102, 241, 0.05);
+      }
+    }
+
+    .item-image {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: grab;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      border: 2px solid transparent;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      &:active {
+        cursor: grabbing;
+      }
+
+      &.drag-preview {
+        opacity: 0.6;
+        pointer-events: none;
+        transform: scale(0.9);
+        filter: blur(1px);
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tier {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    #selector {
+      animation: fadeInUp 0.6s ease-out 0.2s both;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 640px) {
+      body {
+        padding: 0 16px;
+      }
+
+      #top-header h1 {
+        font-size: 2rem;
+      }
+
+      .label {
+        width: 60px;
+        height: 50px;
+        font-size: 1rem;
+        margin: 6px;
+      }
+
+      .item-image {
+        width: 50px;
+        height: 50px;
+      }
+
+      #selector-buttons button,
+      #selector-buttons label {
+        width: 42px;
+        height: 42px;
+      }
+    }
+
+    /* Tooltip styles */
+    [data-tooltip] {
+      position: relative;
+    }
+
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-tooltip]:hover::after {
+      opacity: 1;
+    }
+  </style>
+
+  <script type="module">
+    const $ = el => document.querySelector(el)
+    const $$ = el => document.querySelectorAll(el)
+
+    const imageInput = $('#image-input')
+    const itemsSection = $('#selector-items')
+    const resetButton = $('#reset-tier-button')
+    const saveButton = $('#save-tier-button')
+
+    function createItem(src) {
+      const imgElement = document.createElement('img')
+      imgElement.draggable = true
+      imgElement.src = src
+      imgElement.className = 'item-image'
+
+      imgElement.addEventListener('dragstart', handleDragStart)
+      imgElement.addEventListener('dragend', handleDragEnd)
+
+      itemsSection.appendChild(imgElement)
+      return imgElement
+    }
+
+    function useFilesToCreateItems(files) {
+      if (files && files.length > 0) {
+        Array.from(files).forEach(file => {
+          const reader = new FileReader()
+
+          reader.onload = (eventReader) => {
+            createItem(eventReader.target.result)
+          }
+
+          reader.readAsDataURL(file)
+        })
+      }
+    }
+
+    imageInput.addEventListener('change', (event) => {
+      const { files } = event.target
+      useFilesToCreateItems(files)
+    })
+
+    let draggedElement = null
+    let sourceContainer = null
+
+    const rows = $$('.tier .row')
+
+    rows.forEach(row => {
+      row.addEventListener('dragover', handleDragOver)
+      row.addEventListener('drop', handleDrop)
+      row.addEventListener('dragleave', handleDragLeave)
+    })
+
+    itemsSection.addEventListener('dragover', handleDragOver)
+    itemsSection.addEventListener('drop', handleDrop)
+    itemsSection.addEventListener('dragleave', handleDragLeave)
+
+    itemsSection.addEventListener('drop', handleDropFromDesktop)
+    itemsSection.addEventListener('dragover', handleDragOverFromDesktop)
+
+    function handleDragOverFromDesktop(event) {
+      event.preventDefault()
+
+      const { currentTarget, dataTransfer } = event
+
+      if (dataTransfer.types.includes('Files')) {
+        currentTarget.classList.add('drag-files')
+      }
+    }
+
+    function handleDropFromDesktop(event) {
+      event.preventDefault()
+      const { currentTarget, dataTransfer } = event
+
+      if (dataTransfer.types.includes('Files')) {
+        currentTarget.classList.remove('drag-files')
+        const { files } = dataTransfer
+        useFilesToCreateItems(files)
+      }
+    }
+
+    function handleDrop(event) {
+      event.preventDefault()
+
+      const { currentTarget, dataTransfer } = event
+
+      if (sourceContainer && draggedElement) {
+        sourceContainer.removeChild(draggedElement)
+      }
+
+      if (draggedElement) {
+        const src = dataTransfer.getData('text/plain')
+        const imgElement = createItem(src)
+        currentTarget.appendChild(imgElement)
+      }
+
+      currentTarget.classList.remove('drag-over')
+      currentTarget.querySelector('.drag-preview')?.remove()
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault()
+
+      const { currentTarget, dataTransfer } = event
+      if (sourceContainer === currentTarget) return
+
+      currentTarget.classList.add('drag-over')
+
+      const dragPreview = document.querySelector('.drag-preview')
+
+      if (draggedElement && !dragPreview) {
+        const previewElement = draggedElement.cloneNode(true)
+        previewElement.classList.add('drag-preview')
+        currentTarget.appendChild(previewElement)
+      }
+    }
+
+    function handleDragLeave(event) {
+      event.preventDefault()
+
+      const { currentTarget } = event
+      currentTarget.classList.remove('drag-over')
+      currentTarget.querySelector('.drag-preview')?.remove()
+    }
+
+    function handleDragStart(event) {
+      draggedElement = event.target
+      sourceContainer = draggedElement.parentNode
+      event.dataTransfer.setData('text/plain', draggedElement.src)
+    }
+
+    function handleDragEnd(event) {
+      draggedElement = null
+      sourceContainer = null
+    }
+
+    resetButton.addEventListener('click', () => {
+      const items = $$('.tier .item-image')
+      items.forEach(item => {
+        item.remove()
+        itemsSection.appendChild(item)
+      })
+    })
+
+    saveButton.addEventListener('click', () => {
+      const tierContainer = $('.tier')
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+
+      import('https://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.8/+esm')
+        .then(({ default: html2canvas }) => {
+          html2canvas(tierContainer).then(canvas => {
+            ctx.drawImage(canvas, 0, 0)
+            const imgURL = canvas.toDataURL('image/png')
+
+            const downloadLink = document.createElement('a')
+            downloadLink.download = 'tier.png'
+            downloadLink.href = imgURL
+            downloadLink.click()
+          })
+        })
+    })
+  </script>
+</head>
+
+<body>
+  <header id="top-header">
+    <h1>TIER MAKER</h1>
+  </header>
+
+  <section class="tier">
+    <div class="row">
+      <aside class="label" style="--level: var(--color-s)">
+        <span contenteditable="true">S</span>
+      </aside>
+    </div>
+
+    <div class="row">
+      <aside class="label" style="--level: var(--color-a)">
+        <span contenteditable="true">A</span>
+      </aside>
+    </div>
+
+    <div class="row">
+      <aside class="label" style="--level: var(--color-b)">
+        <span contenteditable="true">B</span>
+      </aside>
+    </div>
+
+    <div class="row">
+      <aside class="label" style="--level: var(--color-c)">
+        <span contenteditable="true">C</span>
+      </aside>
+    </div>
+
+    <div class="row">
+      <aside class="label" style="--level: var(--color-d)">
+        <span contenteditable="true">D</span>
+      </aside>
+    </div>
+
+    <div class="row">
+      <aside class="label" style="--level: var(--color-e)">
+        <span contenteditable="true">E</span>
+      </aside>
+    </div>
+  </section>
+
+  <footer id="selector">
+
+    <section id="selector-buttons">
+      <label data-tooltip="Agregar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+          <path d="M9 12h6" />
+          <path d="M12 9v6" />
+        </svg>
+        <input multiple accept="image/*" id="image-input" type="file" hidden />
+      </label>
+
+      <button id="reset-tier-button" data-tooltip="Recargar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
+        </svg>
+      </button>
+
+      <button id="save-tier-button" data-tooltip="Guardar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+          <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+          <path d="M14 4l0 4l-6 0l0 -4" />
+        </svg>
+      </button>
+    </section>
+
+    <section id="selector-items">
+
+    </section>
+  </footer>
+</body>
+
+</html>
