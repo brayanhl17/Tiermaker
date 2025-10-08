@@ -1,8 +1,8 @@
-# 🏆 Tiermaker
+# Tiermaker
 
 Web para crear tier list personalizadas de forma intuitiva y divertida.
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
 - [Características](#características)
 - [Capturas de Pantalla](#capturas-de-pantalla)
@@ -14,7 +14,7 @@ Web para crear tier list personalizadas de forma intuitiva y divertida.
 - [Funcionalidades](#funcionalidades)
 - [Agradecimientos](#agradecimientos)
 
-## ✨ Características
+## Características
 
 - 🎨 Creación de tier lists personalizadas con diferentes categorías
 - 📸 Carga de imágenes mediante subida de archivos locales
@@ -26,13 +26,13 @@ Web para crear tier list personalizadas de forma intuitiva y divertida.
 - 🔄 Reorganización dinámica de elementos entre tiers
 - 🗑️ Eliminación de elementos con un solo clic
 
-## 📸 Capturas de Pantalla
+## Capturas de Pantalla
 
 
-![Captura inicial](./screenshots/Captura.png)
-![Ejemplo](./screenshots/ejemplo.png)
+![Captura inicial](./screenshots/Captura.PNG)
+![Ejemplo](./screenshots/ejemplo.PNG)
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 - **HTML5**: Estructura semántica y moderna
 - **CSS3**: Estilos personalizados, Flexbox y Grid Layout
@@ -42,7 +42,7 @@ Web para crear tier list personalizadas de forma intuitiva y divertida.
 - **LocalStorage API**: Almacenamiento local del navegador
 - **File API**: Para carga de imágenes locales
 
-## 📋 Requisitos Previos
+## Requisitos Previos
 
 Antes de comenzar, asegúrate de tener:
 
@@ -50,7 +50,7 @@ Antes de comenzar, asegúrate de tener:
 - Editor de código (VS Code, Sublime Text, etc.) - opcional
 - [Git](https://git-scm.com/) para clonar el repositorio
 
-## 🚀 Instalación
+## Instalación
 
 Sigue estos pasos para instalar y ejecutar el proyecto localmente:
 
@@ -85,7 +85,7 @@ http://localhost:8000
 # o simplemente abriendo index.html directamente
 ```
 
-## 🌐 Demo
+## Demo
 
 Prueba la aplicación en vivo sin necesidad de instalar nada:
 
@@ -98,9 +98,7 @@ La demo incluye todas las funcionalidades:
 - 💾 Exportar tu tier list como imagen
 - 📱 Interfaz responsiva para móviles y tablets
 
-> **Nota**: Los datos se guardan localmente en tu navegador usando LocalStorage.
-
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Tiermaker/
@@ -109,26 +107,14 @@ Tiermaker/
 │
 ├── css/
 │   ├── styles.css        # Estilos principales
-│   ├── tierlist.css      # Estilos de tier list
-│   └── responsive.css    # Estilos responsivos
 │
 ├── js/
-│   ├── main.js           # Lógica principal
-│   ├── dragdrop.js       # Funcionalidad drag and drop
-│   ├── storage.js        # Manejo de LocalStorage
-│   ├── export.js         # Exportación de imágenes
-│   ├── imageHandler.js   # Manejo de imágenes
-│   └── utils.js          # Funciones utilitarias
-│
-├── assets/
-│   ├── images/           # Imágenes del proyecto
-│   ├── icons/            # Iconos y recursos
-│   └── fonts/            # Fuentes personalizadas (opcional)
+│   ├── script.js           # Lógica principal
 │
 └── README.md             # Este archivo
 ```
 
-## 🎯 Funcionalidades
+## Funcionalidades
 
 ### Creación de Tier Lists
 - Interfaz intuitiva para crear listas de clasificación
@@ -165,7 +151,7 @@ Tiermaker/
 - Ligero y rápido
 - Compatible con todos los navegadores modernos
 
-## 🙏 Agradecimientos
+## Agradecimientos
 
 - A TierMaker.com por la inspiración del concepto
 - A Midudev, creador de contenido 
