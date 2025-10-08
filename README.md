@@ -28,10 +28,9 @@ Web para crear tier list personalizadas de forma intuitiva y divertida.
 
 ## 📸 Capturas de Pantalla
 
-```
-Próximamente: Capturas de pantalla del editor de tier lists,
-panel de elementos, personalización de tiers y resultado final.
-```
+
+![Captura inicial](./screenshots/Captura.png)
+![Ejemplo](./screenshots/ejemplo.png)
 
 ## 🛠️ Tecnologías
 
